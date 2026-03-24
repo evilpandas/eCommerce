@@ -1,0 +1,26 @@
+<% content_for :title, "Edit #{@product.name}" %>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-6 md:p-8">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Edit Product</h1>
+        <p class="text-gray-600 mt-2">Update the details for <%= @product.name %>.</p>
+      </div>
+
+      <%= render "form", product: @product %>
+
+      <% if user_signed_in? %>
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <%= link_to @product, class: "text-blue-600 hover:text-blue-800 text-sm flex items-center gap-2" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            View Product
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

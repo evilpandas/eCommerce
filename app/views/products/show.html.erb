@@ -1,0 +1,203 @@
+<% content_for :title, @product.name %>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="flex flex-wrap -mx-4">
+    <!-- Product Images -->
+    <div class="w-full md:w-1/2 px-4 mb-8">
+      <% if @product.images.attached? %>
+        <div id="product-carousel" class="relative rounded-lg overflow-hidden shadow-lg mb-4" data-carousel="static">
+          <!-- Main Image Carousel -->
+          <div class="relative h-96">
+            <% @product.images.each_with_index do |image, index| %>
+              <div class="absolute inset-0 duration-700 ease-in-out <%= 'hidden' unless index == 0 %>" data-carousel-item="<%= index == 0 ? 'active' : '' %>">
+                <%= image_tag image, class: "h-full w-full object-cover", alt: "#{@product.name} image #{index + 1}" %>
+              </div>
+            <% end %>
+          </div>
+
+          <% if @product.images.count > 1 %>
+            <!-- Carousel controls -->
+            <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+              <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50">
+                <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                </svg>
+                <span class="sr-only">Previous</span>
+              </span>
+            </button>
+            <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+              <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50">
+                <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                </svg>
+                <span class="sr-only">Next</span>
+              </span>
+            </button>
+          <% end %>
+        </div>
+
+        <% if @product.images.count > 1 %>
+          <!-- Thumbnail Images -->
+          <div class="flex gap-2 overflow-x-auto">
+            <% @product.images.each_with_index do |image, index| %>
+              <button type="button" class="thumbnail-btn flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 <%= index == 0 ? 'border-blue-500' : 'border-gray-300' %> hover:border-blue-500 focus:border-blue-500 transition-colors" data-slide-index="<%= index %>">
+                <%= image_tag image, class: "h-full w-full object-cover", alt: "Thumbnail #{index + 1}" %>
+              </button>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <img class="w-full h-96 rounded-lg shadow-lg object-cover" src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" alt="<%= @product.name %>" />
+      <% end %>
+    </div>
+
+    <!-- Product Details -->
+    <div class="w-full md:w-1/2 px-4">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @product.name %></h1>
+
+      <div class="mb-4">
+        <span class="text-4xl font-bold text-gray-900">$<%= number_with_precision(@product.price, precision: 2) %></span>
+      </div>
+
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-2">Description</h2>
+        <p class="text-gray-700 leading-relaxed">
+          <%= @product.description %>
+        </p>
+      </div>
+
+      <!-- Add to Cart -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+        <div class="flex items-center gap-4 mb-4">
+          <button type="button" id="decrease-qty" class="bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed w-10 h-10 rounded-lg flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+            </svg>
+          </button>
+          <select id="quantity" class="w-20 text-center border border-gray-300 rounded-lg py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <% (1..10).each do |num| %>
+              <option value="<%= num %>"><%= num %></option>
+            <% end %>
+          </select>
+          <button type="button" id="increase-qty" class="bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed w-10 h-10 rounded-lg flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+          </button>
+        </div>
+
+        <button class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2 font-semibold">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Add to Cart
+        </button>
+      </div>
+
+      <!-- Admin Actions -->
+      <% if user_signed_in? %>
+        <div class="border-t pt-6 mt-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-3">Admin Actions</h3>
+          <div class="flex gap-3">
+            <%= link_to "Edit Product", edit_product_path(@product), class: "bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 text-sm font-medium" %>
+            <%= button_to "Delete Product", @product, method: :delete, form: { data: { turbo_confirm: "Are you sure?" } }, class: "bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-medium" %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Back Link -->
+      <div class="mt-6">
+        <%= link_to products_path, class: "text-blue-600 hover:text-blue-800 flex items-center gap-2" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Back to Products
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initProductThumbnails() {
+    const thumbnails = document.querySelectorAll('.thumbnail-btn');
+    const carouselItems = document.querySelectorAll('[data-carousel-item]');
+
+    thumbnails.forEach((thumbnail, index) => {
+      thumbnail.addEventListener('click', function() {
+        // Hide all carousel items
+        carouselItems.forEach(item => {
+          item.classList.add('hidden');
+          item.setAttribute('data-carousel-item', '');
+        });
+
+        // Show selected item
+        carouselItems[index].classList.remove('hidden');
+        carouselItems[index].setAttribute('data-carousel-item', 'active');
+
+        // Update thumbnail borders
+        thumbnails.forEach(thumb => {
+          thumb.classList.remove('border-blue-500');
+          thumb.classList.add('border-gray-300');
+        });
+
+        // Highlight selected thumbnail
+        this.classList.remove('border-gray-300');
+        this.classList.add('border-blue-500');
+      });
+    });
+  }
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', initProductThumbnails);
+  // Re-initialize after Turbo navigation
+  document.addEventListener('turbo:load', initProductThumbnails);
+
+  // Quantity controls
+  function initQuantityControls() {
+    const quantitySelect = document.getElementById('quantity');
+    const decreaseBtn = document.getElementById('decrease-qty');
+    const increaseBtn = document.getElementById('increase-qty');
+
+    if (!quantitySelect || !decreaseBtn || !increaseBtn) return;
+
+    // Skip if already initialized
+    if (decreaseBtn.dataset.initialized) return;
+
+    // Mark as initialized
+    decreaseBtn.dataset.initialized = 'true';
+    increaseBtn.dataset.initialized = 'true';
+
+    function updateButtonStates() {
+      const currentValue = parseInt(quantitySelect.value);
+      decreaseBtn.disabled = currentValue <= 1;
+      increaseBtn.disabled = currentValue >= 10;
+    }
+
+    decreaseBtn.addEventListener('click', function() {
+      const currentValue = parseInt(quantitySelect.value);
+      if (currentValue > 1) {
+        quantitySelect.value = currentValue - 1;
+        updateButtonStates();
+      }
+    });
+
+    increaseBtn.addEventListener('click', function() {
+      const currentValue = parseInt(quantitySelect.value);
+      if (currentValue < 10) {
+        quantitySelect.value = currentValue + 1;
+        updateButtonStates();
+      }
+    });
+
+    quantitySelect.addEventListener('change', updateButtonStates);
+
+    // Initial state
+    updateButtonStates();
+  }
+
+  // Initialize quantity controls
+  document.addEventListener('DOMContentLoaded', initQuantityControls);
+  document.addEventListener('turbo:load', initQuantityControls);
+</script>
