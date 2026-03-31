@@ -1,0 +1,27 @@
+# Active reservation - user cart
+active_item:
+  cart: user_cart
+  product: one
+  quantity: 2
+  reserved_until: <%= 30.minutes.from_now %>
+
+# Another active item
+active_item_two:
+  cart: user_cart
+  product: two
+  quantity: 1
+  reserved_until: <%= 20.minutes.from_now %>
+
+# Expired reservation
+expired_item:
+  cart: guest_cart
+  product: one
+  quantity: 3
+  reserved_until: <%= 1.hour.ago %>
+
+# Guest cart active item
+guest_active_item:
+  cart: guest_cart
+  product: two
+  quantity: 1
+  reserved_until: <%= 25.minutes.from_now %>

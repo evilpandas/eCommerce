@@ -1,16 +1,27 @@
 class Product < ApplicationRecord
   has_many_attached :images
+  has_many :cart_items
 
   # Validations
   validates :name, presence: true
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :price, presence: true, numericality: { greater_than: 0 }
+  validates :stock_quantity, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
-  # Set default price
-  after_initialize :set_default_price, if: :new_record?
+  def in_stock?
+    stock_quantity > 0
+  end
 
-  private
+  def out_of_stock?
+    stock_quantity <= 0
+  end
 
-  def set_default_price
-    self.price ||= 10.00
+  def available_quantity
+    stock_quantity - reserved_quantity
+  end
+
+  def reserved_quantity
+    CartItem.active_reservations
+      .where(product_id: id)
+      .sum(:quantity)
   end
 end

@@ -24,7 +24,14 @@
 
             </li>
             <li>
-              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+              <%= link_to cart_path, class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white flex items-center justify-between" do %>
+                <span>Cart</span>
+                <% if current_cart&.total_items&.positive? %>
+                  <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                    <%= current_cart.total_items %>
+                  </span>
+                <% end %>
+              <% end %>
             </li>
           </ul>
           <div class="py-2">

@@ -1,0 +1,14 @@
+# Authenticated user cart
+user_cart:
+  user: one
+  session_token: <%= SecureRandom.uuid %>
+
+# Guest cart
+guest_cart:
+  user: null
+  session_token: "guest-session-123"
+
+# Empty cart for testing
+empty_cart:
+  user: null
+  session_token: "empty-cart-456"
